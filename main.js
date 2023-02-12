@@ -2,8 +2,9 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import BatchDialog from './components/BatchDialog';
+import { templateTags } from './tags';
 
-export const requestActions = [{
+module.exports.requestActions = [{
   label: 'Batch Requests',
   icon: 'fa-repeat',
   action: (context) => {
@@ -17,3 +18,5 @@ export const requestActions = [{
     });
   },
 }];
+
+module.exports.templateTags = templateTags;
