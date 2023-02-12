@@ -1,0 +1,24 @@
+{
+  "name": "insomnia-plugin-batch-requests",
+  "version": "0.0.1",
+  "insomnia": {
+    "name": "batch-requests",
+    "displayName": "Batch Requests",
+    "description": "The Batch Requests plugin can repeatedly send a request, replacing data with information taken from a CSV file. The response can be used to fill other columns of the CSV file."
+  },
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "parcel watch --no-source-maps main.js",
+    "build": "parcel build --no-source-maps main.js"
+  },
+  "dependencies": {
+    "csv-stringify": "^6.2.4",
+    "csvtojson": "^2.0.10",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "babel-preset-react-app": "^10.0.1",
+    "parcel": "^2.8.3"
+  }
+}
