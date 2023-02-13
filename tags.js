@@ -22,13 +22,17 @@ export const templateTags = [{
         if(context.renderPurpose === 'send') {
             const request = await context.util.models.request.getById(context.meta.requestId);
 
-            // Try to extract the value from the request's _batch_extraData private property
-            const val = request._batch_ExtraData?.[name];
-            console.debug('[batchRequests] ', request);
-            if(!val) {
+            // Extract the extraData from the plugin's store
+            console.debug('[rendertag]', request);
+            const storeKey = `${context.meta.requestId}.batchExtraData`;
+            if(await context.store.hasItem(storeKey)) {
+                const extraData = JSON.parse(await context.store.getItem(storeKey));
+                console.debug('[store.get]', extraData);
+                return extraData[name];
+            } else {
                 console.error(`Cannot find column ${name} on request extra data!`);
+                return sample;
             }
-            return val || sample; // Return the value, falling back to the Sample if the value does not exist
         } else {
             // context.renderPurpose is undefined when previewing the template tag's value
             return sample;

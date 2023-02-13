@@ -10,7 +10,7 @@ module.exports.requestActions = [{
   action: (context, {request}) => {
     const container = document.createElement('div');
     const root = createRoot(container);
-    root.render(<BatchDialog request={request}/>)
+    root.render(<BatchDialog context={context} request={request}/>)
 
     context.app.dialog('Batch Requests', container, {
       onHide: () => root.unmount(),

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import csv from 'csvtojson';
 
 import SampleTable from './SampleTable';
@@ -7,7 +7,7 @@ import FileChooserButton from './FileChooserButton';
 import ActionButton from './ActionButton';
 import OutputFieldsChooser from './OutputFieldsChooser';
 
-export default function BatchDialog({request}) {
+export default function BatchDialog({context, request}) {
   const [csvHeaders, setCsvHeaders] = useState([]);
   const [csvData, setCsvData] = useState([]);
   const [outputConfig, setOutputConfig] = useState([]);
@@ -20,9 +20,13 @@ export default function BatchDialog({request}) {
   });
 
   const canRun = csvData.length > 0 && outputConfig.length > 0 && outputConfig.every(x => x.name && x.jsonPath);
-  const onRun = () => {
-    console.log(csvData, csvHeaders)
-    console.log(outputConfig);
+  const onRun = async () => {
+    for(const row of csvData) {
+      const storeKey = `${request._id}.batchExtraData`;
+      await context.store.setItem(storeKey, JSON.stringify(row));
+      await context.network.sendRequest(request);
+      await context.store.removeItem(storeKey);
+    }
   };
 
   const onChangeOutputFields = (x) => {
