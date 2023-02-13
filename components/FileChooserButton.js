@@ -1,5 +1,7 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { selectFile } from '../utils.js';
+
+import ActionButton from './ActionButton.js';
 
 export default function FileChooserButton({title="Choose File", onChange, extensions}) {
   const _handleChooseFile = useCallback(async () => {
@@ -13,8 +15,5 @@ export default function FileChooserButton({title="Choose File", onChange, extens
     onChange(filePath);
   }, [onChange]);
 
-  return <button type="button" title={title} onClick={_handleChooseFile} className="btn btn--clicky btn--super-compact">
-    <i className="fa fa-file-o space-right"></i>
-    {title}
-  </button>
+  return <ActionButton title={title} icon="fa-file-o" onClick={_handleChooseFile} />
 }

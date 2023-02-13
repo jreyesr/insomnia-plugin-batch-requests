@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import csv from 'csvtojson';
-import fs from 'fs';
 
 import SampleTable from './SampleTable';
 import FormRow from './FormRow';
 import FileChooserButton from './FileChooserButton';
+import ActionButton from './ActionButton';
+import OutputFieldsChooser from './OutputFieldsChooser';
 
-
-export default function BatchDialog() {
+export default function BatchDialog({request}) {
   const [csvHeaders, setCsvHeaders] = useState([]);
   const [csvData, setCsvData] = useState([]);
+  const [outputConfig, setOutputConfig] = useState([]);
 
   const onFileChosen = (path => {
     csv()
@@ -17,6 +18,16 @@ export default function BatchDialog() {
       .fromFile(path)
       .then(setCsvData);
   });
+
+  const canRun = csvData.length > 0 && outputConfig.length > 0 && outputConfig.every(x => x.name && x.jsonPath);
+  const onRun = () => {
+    console.log(csvData, csvHeaders)
+    console.log(outputConfig);
+  };
+
+  const onChangeOutputFields = (x) => {
+    setOutputConfig(x)
+  }
 
   return (<React.Fragment>
     <FormRow label="Choose CSV">
@@ -28,5 +39,7 @@ export default function BatchDialog() {
       </FormRow>
     ) : <p>Choose a file above to preview it!</p>}
 
+    <OutputFieldsChooser colNames={csvHeaders} onChange={onChangeOutputFields} />
+    <ActionButton title="Run!" icon="fa-person-running" onClick={onRun} disabled={!canRun}/>
   </React.Fragment>);
 }
