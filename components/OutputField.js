@@ -18,7 +18,7 @@ export default function OutputField({options, name, jsonPath, onChange, onDelete
       <option value="">---Choose one---</option>
       {options.map(o => <option key={o} value={o}>{o}</option>)}
     </select>
-    <input type="text" value={jsonPath} onChange={onChangeJsonPath} />
+    <input type="text" value={jsonPath} onChange={onChangeJsonPath} placeholder='$.store.books[*].author'/>
     <ActionButton title="" icon="fa-trash" onClick={onDelete} />
   </div>
 }
