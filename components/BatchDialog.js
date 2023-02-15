@@ -22,15 +22,17 @@ export default function BatchDialog({context, request}) {
       .then(() => setSent(0));
   });
 
-  const canRun = csvData.length > 0 && outputConfig.length > 0 && outputConfig.every(x => x.name && x.jsonPath);
+  const canRun = csvData.length > 0 && outputConfig.every(x => x.name && x.jsonPath);
   const onRun = async () => {
     setSent(0);
     for(const row of csvData) {
       const storeKey = `${request._id}.batchExtraData`;
       await context.store.setItem(storeKey, JSON.stringify(row));
-      await context.network.sendRequest(request);
+      let response = await context.network.sendRequest(request);
       await context.store.removeItem(storeKey);
       setSent(s => s + 1);
+
+      console.log(response);
     }
   };
 
