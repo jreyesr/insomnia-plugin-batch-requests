@@ -1,3 +1,6 @@
+import { JSONPath } from 'jsonpath-plus';
+import fs from "fs";
+
 export const selectFile = async ({ extensions }) => {
   let title = 'Select File'; 
 
@@ -19,3 +22,9 @@ export const selectFile = async ({ extensions }) => {
     canceled,
   };
 };
+
+export const applyJsonPath = (jsonpath, data) => {
+  return JSONPath({path: jsonpath, json: data, flatten: true, wrap: false});
+}
+
+export const readResponseFromFile = (path) => fs.readFileSync(path, {encoding: "utf-8"})

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import csv from 'csvtojson';
 
+import { applyJsonPath, readResponseFromFile } from '../utils';
+
 import SampleTable from './SampleTable';
 import FormRow from './FormRow';
 import FileChooserButton from './FileChooserButton';
@@ -25,14 +27,24 @@ export default function BatchDialog({context, request}) {
   const canRun = csvData.length > 0 && outputConfig.every(x => x.name && x.jsonPath);
   const onRun = async () => {
     setSent(0);
-    for(const row of csvData) {
+    for(const [i, row] of csvData.entries()) {
       const storeKey = `${request._id}.batchExtraData`;
       await context.store.setItem(storeKey, JSON.stringify(row));
       let response = await context.network.sendRequest(request);
       await context.store.removeItem(storeKey);
       setSent(s => s + 1);
 
-      console.log(response);
+      // Read the response data, then apply JSONPath expressions on it and update the CSV data
+      const responseData = JSON.parse(readResponseFromFile(response.bodyPath));
+      console.debug(responseData)
+      for(const {name, jsonPath} of outputConfig) {
+        const out = applyJsonPath(jsonPath, responseData)
+        console.debug(name, "+", jsonPath, "=>", out);
+
+        let nextData = [...csvData]; // Copy the array so that it can trigger a state update
+        nextData[i][name] = out; // Mutate the required field
+        setCsvData(nextData);
+      }
     }
   };
 
