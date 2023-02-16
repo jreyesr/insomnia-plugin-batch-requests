@@ -33,16 +33,23 @@ export default function BatchDialog({context, request}) {
       let response = await context.network.sendRequest(request);
       await context.store.removeItem(storeKey);
       setSent(s => s + 1);
+      console.debug(response);
+
+      // If we need to extract response data, check that the Content-Type header is sensible, otherwise error out
+      if(outputConfig.length > 0 && !response.contentType.startsWith("application/json")) {
+        context.app.alert("Error!", `The response has invalid Content-Type "${response.contentType}", needs "application/json"! Alternatively, delete all Outputs and try again.`)
+        continue; // There's no point in attempting to parse the response, just jump to the next request
+      }
 
       // Read the response data, then apply JSONPath expressions on it and update the CSV data
       const responseData = JSON.parse(readResponseFromFile(response.bodyPath));
       console.debug(responseData)
       for(const {name, jsonPath} of outputConfig) {
-        const out = applyJsonPath(jsonPath, responseData)
+        const out = applyJsonPath(jsonPath, responseData) ?? null;
         console.debug(name, "+", jsonPath, "=>", out);
 
         let nextData = [...csvData]; // Copy the array so that it can trigger a state update
-        nextData[i][name] = out; // Mutate the required field
+        nextData[i][name] = JSON.stringify(out); // Mutate the required field, save it as a string
         setCsvData(nextData);
       }
     }
