@@ -23,6 +23,10 @@ export const selectFile = async ({ extensions }) => {
   };
 };
 
+export const writeFile = (path, content) => {
+  fs.writeFileSync(path, content, {encoding: "utf8"});
+}
+
 export const applyJsonPath = (jsonpath, data) => {
   return JSONPath({path: jsonpath, json: data, flatten: true, wrap: false});
 }

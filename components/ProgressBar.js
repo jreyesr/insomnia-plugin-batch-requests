@@ -3,7 +3,7 @@
 
 import React from "react";
 
-const ProgressBar = (props) => {
+export default function ProgressBar(props) {
   const { bgcolor, completed, text } = props;
 
   const containerStyles = {
@@ -38,5 +38,3 @@ const ProgressBar = (props) => {
     </div>
   );
 };
-
-export default ProgressBar;

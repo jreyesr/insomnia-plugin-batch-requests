@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import csv from 'csvtojson';
+import { stringify } from 'csv-stringify/sync';
 
-import { applyJsonPath, readResponseFromFile } from '../utils';
+import { applyJsonPath, readResponseFromFile, writeFile } from '../utils';
 
 import SampleTable from './SampleTable';
 import FormRow from './FormRow';
@@ -11,18 +12,25 @@ import OutputFieldsChooser from './OutputFieldsChooser';
 import ProgressBar from './ProgressBar';
 
 export default function BatchDialog({context, request}) {
+  const [csvPath, setCsvPath] = useState("");
   const [csvHeaders, setCsvHeaders] = useState([]);
   const [csvData, setCsvData] = useState([]);
   const [outputConfig, setOutputConfig] = useState([]);
   const [sent, setSent] = useState(0);
 
   const onFileChosen = (path => {
+    setCsvPath(path);
     csv()
       .on('header', setCsvHeaders)
       .fromFile(path)
       .then(setCsvData)
       .then(() => setSent(0));
   });
+
+  const saveCsv = useCallback(() => {
+    const outString = stringify(csvData, {columns: csvHeaders, header: true});
+    writeFile(csvPath, outString);
+  }, [csvData, csvHeaders, csvPath]);
 
   const canRun = csvData.length > 0 && outputConfig.every(x => x.name && x.jsonPath);
   const onRun = async () => {
@@ -45,11 +53,17 @@ export default function BatchDialog({context, request}) {
       const responseData = JSON.parse(readResponseFromFile(response.bodyPath));
       console.debug(responseData)
       for(const {name, jsonPath} of outputConfig) {
-        const out = applyJsonPath(jsonPath, responseData) ?? null;
+        let out = applyJsonPath(jsonPath, responseData) ?? null;
         console.debug(name, "+", jsonPath, "=>", out);
 
         let nextData = [...csvData]; // Copy the array so that it can trigger a state update
-        nextData[i][name] = JSON.stringify(out); // Mutate the required field, save it as a string
+        out = JSON.stringify(out);
+        // BUGFIX: If value was a string, remove the quotes, since they look weird, and we expect strings to be one
+        // of the primary output values of the plugin
+        if(out.startsWith('"') && out.endsWith('"')) {
+          out = out.substring(1, out.length - 1);
+        }
+        nextData[i][name] = out; // Mutate the required field, save it as a string
         setCsvData(nextData);
       }
     }
@@ -77,5 +91,6 @@ export default function BatchDialog({context, request}) {
     </FormRow>
     
     <ActionButton title="Run!" icon="fa-person-running" onClick={onRun} disabled={!canRun}/>
+    <ActionButton title="Save" icon="fa-save" onClick={saveCsv} disabled={!canRun} style={{marginLeft: 5}}/>
   </React.Fragment>);
 }
