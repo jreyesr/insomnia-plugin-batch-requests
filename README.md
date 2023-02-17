@@ -4,6 +4,10 @@ The Batch Requests plugin for [Insomnia](https://insomnia.rest) adds a context m
 
 ![A diagram displaying the flow of data in the plugin](images/flow.png)
 
+For a short demonstration, watch this:
+
+![A GIF animation displaying the usage of the plugin](images/animation.gif)
+
 ## Installing
 
 Go to the `Application>Preferences` menu in Insomnia, then go to the `Plugins` tab, search for `insomnia-plugin-batch-requests` and install it.
@@ -33,7 +37,6 @@ On the plugin dialog (see the image below), you should:
 2. Review the loaded data in the table. It will show the first five rows of the CSV file. It is provided as a sanity check, so that you can verify that the CSV is being parsed correctly.
 3. Configure the data that you want to output by adding `Outputs`. For each one, use the dropdown on the left to specify a CSV column, and write a JSONPath expression in the text field on the right. In the image below, the `$.total` field will be extracted to the `sales` column in the CSV file.
 4. Click the `Run!` button at the bottom of the dialog. It will only become active when you have chosen a file and provided at least one Output.
+5. Click the `Save` button to write the extracted data back to the CSV file, if you need it.
 
 ![A screenshot showing the main plugin UI. From top to bottom, there is a button to load a file, a table showing a preview of the data, a series of fields to specify output data, and a button to run the request multiple times](images/runner_ui.png)
-
-
