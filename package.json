@@ -1,6 +1,19 @@
 {
   "name": "insomnia-plugin-batch-requests",
-  "version": "0.0.1",
+  "description": "An Insomnia plugin that can send a request multiple times, varying the request with data taken from a CSV file and extracting information from the responses back into the CSV file",
+  "homepage": "https://github.com/jreyesr/insomnia-plugin-batch-requests",
+  "repository": {
+    "url": "https://github.com/jreyesr/insomnia-plugin-batch-requests"
+  },
+  "version": "1.0.0",
+  "author": {
+    "name": "jreyesr",
+    "url": "https://github.com/jreyesr"
+  },
+  "bugs": {
+    "url": "https://github.com/jreyesr/insomnia-plugin-batch-requests/issues"
+  },
+  "license": "MIT",
   "insomnia": {
     "name": "batch-requests",
     "displayName": "Batch Requests",
