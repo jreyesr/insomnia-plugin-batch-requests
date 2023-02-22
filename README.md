@@ -1,5 +1,7 @@
 # insomnia-plugin-batch-requests
 
+[![npm](https://img.shields.io/npm/v/insomnia-plugin-batch-requests)](https://www.npmjs.com/package/insomnia-plugin-batch-requests)
+
 The Batch Requests plugin for [Insomnia](https://insomnia.rest) adds a context menu option that lets you send a request repeatedly, changing parts of every request by variable data, taken from a CSV file. For every response, some data can be collected and added to the CSV file. See below for a diagram:
 
 ![A diagram displaying the flow of data in the plugin](images/flow.png)
