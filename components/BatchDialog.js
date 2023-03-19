@@ -10,6 +10,7 @@ import FileChooserButton from './FileChooserButton';
 import ActionButton from './ActionButton';
 import OutputFieldsChooser from './OutputFieldsChooser';
 import ProgressBar from './ProgressBar';
+import DelaySelector from './DelaySelector';
 
 export default function BatchDialog({context, request}) {
   const [csvPath, setCsvPath] = useState("");
@@ -17,6 +18,7 @@ export default function BatchDialog({context, request}) {
   const [csvData, setCsvData] = useState([]);
   const [outputConfig, setOutputConfig] = useState([]);
   const [sent, setSent] = useState(0);
+  const [delay, setDelay] = useState(0);
 
   const onFileChosen = (path => {
     setCsvPath(path);
@@ -42,6 +44,11 @@ export default function BatchDialog({context, request}) {
       await context.store.removeItem(storeKey);
       setSent(s => s + 1);
       console.debug(response);
+
+      // Sleep for a bit
+      console.debug("sleep started, delay =", delay)
+      await new Promise(r => setTimeout(r, delay * 1000));
+      console.debug("sleep ended")
 
       // If we need to extract response data, check that the Content-Type header is sensible, otherwise error out
       if(outputConfig.length > 0 && !response.contentType.startsWith("application/json")) {
@@ -75,6 +82,11 @@ export default function BatchDialog({context, request}) {
     setOutputConfig(x)
   }
 
+  const onChangeDelay = ({target: {value}}) => {
+    if(value < 0) return;
+    setDelay(value)
+  }
+
   return (<React.Fragment>
     <FormRow label="Choose CSV">
       <FileChooserButton onChange={onFileChosen} extensions={["csv"]}/>
@@ -86,6 +98,11 @@ export default function BatchDialog({context, request}) {
     ) : <p>Choose a file above to preview it!</p>}
 
     <OutputFieldsChooser colNames={csvHeaders} onChange={onChangeOutputFields} />
+
+    <FormRow label="Run config">
+      <DelaySelector value={delay} onChange={onChangeDelay}/>
+    </FormRow>
+
     <FormRow label="Progress">
       <ProgressBar bgcolor="#a11" completed={sent * 100 / totalRequests} text={`${sent}/${totalRequests}`} />
     </FormRow>
