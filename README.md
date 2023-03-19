@@ -42,3 +42,18 @@ On the plugin dialog (see the image below), you should:
 5. Click the `Save` button to write the extracted data back to the CSV file, if you need it.
 
 ![A screenshot showing the main plugin UI. From top to bottom, there is a button to load a file, a table showing a preview of the data, a series of fields to specify output data, and a button to run the request multiple times](images/runner_ui.png)
+
+## Development
+
+1. Identify your Insomnia plugin folder. On Ubuntu, it should be `~/.config/Insomnia/plugins`. Alternatively, open Insomnia, select the `Application>Preferences` menu, go to the Plugins tab, then click the `Reveal Plugins Folder` button.
+2. On that folder, run `git clone https://github.com/jreyesr/insomnia-plugin-batch-requests`.
+3. Run `npm i`.
+3. Run `npm run dev`. This will start a dev server that will generate the `dist/main.js` file and keep it updated whenever you change the source files.
+4. Open the Insomnia Plugins dialog (see the first step). It should display the plugin, since it's in the correct folder. It's not necessary to manually install it.
+5. Create and checkout a new branch.
+6. Hackity hack on the source files.
+7. Whenever you save a file, the `dist/main.js` file will be updated. To make Insomnia pick up the changes, select the `Tools>Reload plugins` option from the top menus. Alternatively, press `Alt+T`, then release both, then press `R`.
+8. Make commit.
+9. GOTO 6
+10. Update the package version in `package.json`.
+11. When done, submit a PR and merge it. The CD should pick it up, compile a package and upload it to NPM.
