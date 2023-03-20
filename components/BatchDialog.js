@@ -50,12 +50,20 @@ export default function BatchDialog({context, request}) {
       await new Promise(r => setTimeout(r, delay * 1000));
       console.debug("sleep ended")
 
-      // If we need to extract response data, check that the Content-Type header is sensible, otherwise error out
-      if(outputConfig.length > 0 && !response.contentType.startsWith("application/json")) {
+      if(outputConfig.length === 0){
+        // No need to process the response, the user hasn't asked for any outputs
+        console.debug("skipping response extraction")
+        continue;
+      }
+      // At this point, we know that we need to extract response data
+
+      // Check that the Content-Type header is sensible, otherwise error out
+      if(!response.contentType.startsWith("application/json")) {
         context.app.alert("Error!", `The response has invalid Content-Type "${response.contentType}", needs "application/json"! Alternatively, delete all Outputs and try again.`)
         continue; // There's no point in attempting to parse the response, just jump to the next request
       }
 
+      console.debug("parsing response data")
       // Read the response data, then apply JSONPath expressions on it and update the CSV data
       const responseData = JSON.parse(readResponseFromFile(response.bodyPath));
       console.debug(responseData)
