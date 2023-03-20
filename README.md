@@ -57,3 +57,10 @@ On the plugin dialog (see the image below), you should:
 9. GOTO 6
 10. Update the package version in `package.json`.
 11. When done, submit a PR and merge it. The CD should pick it up, compile a package and upload it to NPM.
+
+## Releasing
+
+1. Ensure that the package version in `package.json` has been bumped.
+2. Make all required commits, ensure that `master` has the code.
+3. Create a Github Release, tag it like the version in `package.json`.
+4. The CD runner should create the release and publish it.
