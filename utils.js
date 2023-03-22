@@ -32,3 +32,11 @@ export const applyJsonPath = (jsonpath, data) => {
 }
 
 export const readResponseFromFile = (path) => fs.readFileSync(path, {encoding: "utf-8"})
+
+const STORE_KEY = "settings_global";
+export const readSettings = async (store) => {
+  if(await store.hasItem(STORE_KEY)) return JSON.parse(await store.getItem(STORE_KEY))
+  else return {}
+};
+
+export const writeSettings = async (store, newSettings) => await store.setItem(STORE_KEY, JSON.stringify(newSettings));

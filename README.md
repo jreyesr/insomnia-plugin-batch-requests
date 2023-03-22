@@ -43,6 +43,21 @@ On the plugin dialog (see the image below), you should:
 
 ![A screenshot showing the main plugin UI. From top to bottom, there is a button to load a file, a table showing a preview of the data, a series of fields to specify output data, and a button to run the request multiple times](images/runner_ui.png)
 
+### Configuration
+
+Since `v1.2.0`, there is a Global Configuration dialog in which you can select a default request delay, in case you usually work with servers that require a delay between requests.
+
+1. Click on the dropdown to the right of the workspace name.
+2. Click the `Batch Requests: Settings` option.
+3. A dialog will open, containing a number field called `Default delay`. Set its value to your preferred delay.
+4. Click the Save button. It will only be enabled after you make a change to the field.
+5. Dismiss the Global Configuration dialog.
+6. From now on, whenever you open the main plugin dialog by right-clicking a request, the Delay field will be prefilled with your preferred delay. You can always adjust it.
+
+![a screenshot showing the workspace menu, with a new option for the plugin's configuration](./images/settings_1.png)
+
+![a screenshot showing the configuration dialog, with a field for the default delay and a Save button](./images/settings_2.png)
+
 ## Development
 
 1. Identify your Insomnia plugin folder. On Ubuntu, it should be `~/.config/Insomnia/plugins`. Alternatively, open Insomnia, select the `Application>Preferences` menu, go to the Plugins tab, then click the `Reveal Plugins Folder` button.
