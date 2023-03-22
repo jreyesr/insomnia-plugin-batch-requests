@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import csv from 'csvtojson';
 import { stringify } from 'csv-stringify/sync';
 
-import { applyJsonPath, readResponseFromFile, writeFile } from '../utils';
+import { applyJsonPath, readResponseFromFile, writeFile, readSettings } from '../utils';
 
 import SampleTable from './SampleTable';
 import FormRow from './FormRow';
@@ -19,6 +19,15 @@ export default function BatchDialog({context, request}) {
   const [outputConfig, setOutputConfig] = useState([]);
   const [sent, setSent] = useState(0);
   const [delay, setDelay] = useState(0);
+
+  // Load default delay from plugin settings on mount
+  useEffect(() => {
+    async function loadSettings() {
+      const settings = await readSettings(context.store);
+      setDelay(parseFloat(settings.defaultDelay ?? 0))
+    }
+    loadSettings();
+  }, [])
 
   const onFileChosen = (path => {
     setCsvPath(path);
