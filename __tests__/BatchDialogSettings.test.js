@@ -1,4 +1,5 @@
-import {render, fireEvent, waitFor} from '@testing-library/react';
+import {render, waitFor} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import BatchDialogSettings from '../components/BatchDialogSettings'
 
@@ -40,17 +41,19 @@ it('triggers the save function', async () => {
       setItem: mockSetItem,
     },
   }
+  const user = userEvent.setup();
   const {getByText, getByLabelText} = render(
     <BatchDialogSettings context={mockContextWithSet} />,
   );
 
-  fireEvent.change(getByLabelText(/default delay/i), {target: {value: 0.3}})
-  fireEvent.click(getByText("Save"));
+  await user.type(getByLabelText(/default delay/i), "0.3")
+  await user.click(getByText("Save"));
   await waitFor(() => expect(mockSetItem).toBeCalled())
 });
 
 it('rejects negative numbers', async () => {
-  const {queryByLabelText, getByText, getByLabelText} = render(
+  const user = userEvent.setup();
+  const {queryByLabelText} = render(
     <BatchDialogSettings context={mockContext} />,
   );
 
@@ -58,8 +61,9 @@ it('rejects negative numbers', async () => {
   // wait for onMount effects to run
   await waitFor(() => expect(delayField).toHaveValue(0.2));
   
-  fireEvent.change(delayField, {target: {value: -.1}})
-  expect(delayField).toHaveValue(0.2);
+  await user.clear(delayField);
+  await user.type(delayField, "-0.1")
+  expect(delayField).toHaveValue(0.1);
 });
 
 it("doesn't enable the Save button when loading", async () => {
@@ -73,13 +77,14 @@ it("doesn't enable the Save button when loading", async () => {
 });
 
 it("enables the Save button after a change is made", async () => {
+  const user = userEvent.setup();
   const {getByText, getByLabelText} = render(
     <BatchDialogSettings context={mockContext} />,
   );
   // wait for onMount effects to run
   await waitFor(() => expect(getByLabelText(/default delay/i)).toHaveValue(0.2));
   
-  fireEvent.change(getByLabelText(/default delay/i), {target: {value: 0.3}})
+  await user.type(getByLabelText(/default delay/i), "0.3")
   expect(getByText("Save")).toBeEnabled();
 });
 
@@ -92,11 +97,12 @@ it("redisables the Save button after saving changes", async () => {
       setItem: mockSetItem,
     },
   }
+  const user = userEvent.setup();
   const {getByText, getByLabelText} = render(
     <BatchDialogSettings context={mockContextWithSet} />,
   );
-  fireEvent.change(getByLabelText(/default delay/i), {target: {value: 0.3}})
-  fireEvent.click(getByText("Save"));
+  await user.type(getByLabelText(/default delay/i), "0.3")
+  await user.click(getByText("Save"));
 
   // wait for effects to settle
   await waitFor(() => expect(getByText("Save")).toBeDisabled());

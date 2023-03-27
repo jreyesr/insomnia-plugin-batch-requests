@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import csv from 'csvtojson';
 import { stringify } from 'csv-stringify/sync';
 
-import { applyJsonPath, readResponseFromFile, writeFile, readSettings } from '../utils';
+import { applyJsonPath, readResponseFromFile, writeFile, readCsv, readSettings } from '../utils';
 
 import SampleTable from './SampleTable';
 import FormRow from './FormRow';
@@ -29,14 +28,13 @@ export default function BatchDialog({context, request}) {
     loadSettings();
   }, [])
 
-  const onFileChosen = (path => {
+  const onFileChosen = async (path) => {
     setCsvPath(path);
-    csv()
-      .on('header', setCsvHeaders)
-      .fromFile(path)
-      .then(setCsvData)
-      .then(() => setSent(0));
-  });
+    const {headers, results} = await readCsv(path);
+    setCsvHeaders(headers);
+    setCsvData(results);
+    setSent(0);
+  };
 
   const saveCsv = useCallback(() => {
     const outString = stringify(csvData, {columns: csvHeaders, header: true});

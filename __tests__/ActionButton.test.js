@@ -1,4 +1,5 @@
-import {render, fireEvent, waitFor} from '@testing-library/react';
+import {render} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import ActionButton from '../components/ActionButton'
 
@@ -15,22 +16,24 @@ it('renders with default values', () => {
 
 it("calls the callback when clicked", async () => {
   const cb = jest.fn();
+  const user = userEvent.setup();
   const {container} = render(
     <ActionButton onClick={cb} />,
   );
 
-  fireEvent.click(container.firstChild);
+  await user.click(container.firstChild);
 
   expect(cb).toBeCalled();
 });
 
 it("does not call the callback when disabled", async () => {
   const cb = jest.fn();
+  const user = userEvent.setup();
   const {container} = render(
     <ActionButton onClick={cb} disabled={true}/>,
   );
 
-  fireEvent.click(container.firstChild);
+  await user.click(container.firstChild);
 
   expect(cb).not.toBeCalled();
 });
