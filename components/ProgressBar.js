@@ -26,8 +26,10 @@ export default function ProgressBar(props) {
 
   const labelStyles = {
     paddingInline: 5,
-    color: 'white',
-    fontWeight: 'bold'
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 'x-small',
+    verticalAlign: 'top',
   }
 
   return (

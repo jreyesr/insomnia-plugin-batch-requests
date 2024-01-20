@@ -11,6 +11,7 @@ import ActionButton from './ActionButton';
 import OutputFieldsChooser from './OutputFieldsChooser';
 import ProgressBar from './ProgressBar';
 import DelaySelector from './DelaySelector';
+import ParallelSelector from './ParallelSelector';
 
 export default function BatchDialog({context, request}) {
   const [csvPath, setCsvPath] = useState("");
@@ -18,7 +19,9 @@ export default function BatchDialog({context, request}) {
   const [csvData, setCsvData] = useState([]);
   const [outputConfig, setOutputConfig] = useState([]);
   const [sent, setSent] = useState(0);
+
   const [delay, setDelay] = useState(0);
+  const [parallelism, setParallelism] = useState(1);
 
   // Load default delay from plugin settings on mount
   useEffect(() => {
@@ -47,7 +50,7 @@ export default function BatchDialog({context, request}) {
     setSent(0);
 
     const queue = new Queue({
-      concurrent: 4,
+      concurrent: parallelism,
       interval: 0,
       start: false,
     });
@@ -89,10 +92,11 @@ export default function BatchDialog({context, request}) {
 
     <FormRow label="Run config">
       <DelaySelector value={delay} onChange={onChangeDelay}/>
+      <ParallelSelector value={parallelism} onChange={({target: {value}}) => setParallelism(value)}/>
     </FormRow>
 
     <FormRow label="Progress">
-      <ProgressBar bgcolor="#a11" completed={sent * 100 / totalRequests} text={`${sent}/${totalRequests}`} />
+      <ProgressBar bgcolor="#ff6b6b" completed={sent * 100 / totalRequests} text={`${sent}/${totalRequests}`} />
     </FormRow>
     
     <ActionButton title="Run!" icon="fa-person-running" onClick={onRun} disabled={!canRun}/>
