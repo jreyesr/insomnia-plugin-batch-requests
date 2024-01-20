@@ -22,8 +22,8 @@ The plugin adds a template tag to mark the places that you want to replace. To a
 
 When configuring the tag, set the following two values:
 
-* The name of the CSV column that will be replaced in this tag's location. Copy it from the first line of the CSV file, exactly (including capitalization)
-* A sample value. This value will be used when sending the request manually. This is the value that you would have to edit manually if this plugin did not exist.
+- The name of the CSV column that will be replaced in this tag's location. Copy it from the first line of the CSV file, exactly (including capitalization)
+- A sample value. This value will be used when sending the request manually. This is the value that you would have to edit manually if this plugin did not exist.
 
 The live preview will always show the value of the `Sample value` field. The value will only vary when sending the request via the Batch Request dropdown option (see below).
 
@@ -63,15 +63,16 @@ Since `v1.2.0`, there is a Global Configuration dialog in which you can select a
 1. Identify your Insomnia plugin folder. On Ubuntu, it should be `~/.config/Insomnia/plugins`. Alternatively, open Insomnia, select the `Application>Preferences` menu, go to the Plugins tab, then click the `Reveal Plugins Folder` button.
 2. On that folder, run `git clone https://github.com/jreyesr/insomnia-plugin-batch-requests`.
 3. Run `npm i`.
-3. Run `npm run dev`. This will start a dev server that will generate the `dist/main.js` file and keep it updated whenever you change the source files.
-4. Open the Insomnia Plugins dialog (see the first step). It should display the plugin, since it's in the correct folder. It's not necessary to manually install it.
-5. Create and checkout a new branch.
-6. Hackity hack on the source files.
-7. Whenever you save a file, the `dist/main.js` file will be updated. To make Insomnia pick up the changes, select the `Tools>Reload plugins` option from the top menus. Alternatively, press `Alt+T`, then release both, then press `R`.
-8. Make commit.
-9. GOTO 6
-10. Update the package version in `package.json`.
-11. When done, submit a PR and merge it. The CD should pick it up, compile a package and upload it to NPM.
+4. Run `npm run dev`. This will start a dev server that will generate the `dist/main.js` file and keep it updated whenever you change the source files.
+5. Open the Insomnia Plugins dialog (see the first step). It should display the plugin, since it's in the correct folder. It's not necessary to manually install it.
+6. Create and checkout a new branch.
+7. Hackity hack on the source files.
+8. Whenever you save a file, the `dist/main.js` file will be updated. To make Insomnia pick up the changes, select the `Tools>Reload plugins` option from the top menus. Alternatively, press `Alt+T`, then release both, then press `R`.
+9. To run tests, run `npm run test`
+10. Make commit.
+11. GOTO 6
+12. Update the package version in `package.json`.
+13. When done, submit a PR and merge it. The CD should pick it up, compile a package and upload it to NPM.
 
 ## Releasing
 

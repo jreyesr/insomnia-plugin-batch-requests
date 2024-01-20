@@ -1,5 +1,8 @@
-import { JSONPath } from 'jsonpath-plus';
 import fs from "fs";
+
+import csv from 'csvtojson';
+import { JSONPath } from 'jsonpath-plus';
+
 
 export const selectFile = async ({ extensions }) => {
   let title = 'Select File'; 
@@ -25,6 +28,14 @@ export const selectFile = async ({ extensions }) => {
 
 export const writeFile = (path, content) => {
   fs.writeFileSync(path, content, {encoding: "utf8"});
+}
+
+export const readCsv = async (path) => {
+  let headers;
+  let results = await csv()
+    .on('header', (h) => {headers = h;})
+    .fromFile(path);
+  return {headers, results};
 }
 
 export const applyJsonPath = (jsonpath, data) => {

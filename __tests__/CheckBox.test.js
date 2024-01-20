@@ -1,4 +1,5 @@
-import {render, fireEvent} from '@testing-library/react';
+import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import CheckBox from '../components/CheckBox'
 
@@ -24,11 +25,12 @@ it('renders when unchecked', () => {
 
 it("calls the callback when clicked", async () => {
   const cb = jest.fn();
+  const user = userEvent.setup();
   const {container} = render(
     <CheckBox state={false} onToggle={cb} />,
   );
 
-  fireEvent.click(container.firstChild);
+  await user.click(container.firstChild);
 
   expect(cb).toBeCalled();
   expect(cb).toBeCalledWith(true);
