@@ -51,3 +51,57 @@ export const readSettings = async (store) => {
 };
 
 export const writeSettings = async (store, newSettings) => await store.setItem(STORE_KEY, JSON.stringify(newSettings));
+
+export async function makeRequest(context, request, i, row, delay, outputConfig, setSent, setCsvData) {
+  // Sleep for a bit
+  console.debug("sleep started, delay =", delay)
+  await new Promise(r => setTimeout(r, delay * 1000))
+  console.debug("sleep ended")
+    
+  const extraData = [{name: "batchExtraData", value: JSON.stringify(row)}]
+  // NOTE: The second argument to sendRequests() isn't really documented, but it's there
+  // See the run() function on tags.js for an example of how to use it. It may not be supported, but it Seems To Work For Me (TM)
+  let response = await context.network.sendRequest(request, extraData)
+
+  setSent(s => s + 1); // Atomically (?) increment the count of sent requests by one
+  console.debug(response);
+
+  if(outputConfig.length === 0){
+    // No need to process the response, the user hasn't asked for any outputs
+    // This means that non-JSON responses are also usable in this plugin,
+    // as long as you don't try to read any data out from it (since we don't know how to parse things that aren't JSON)
+    console.debug("skipping response extraction")
+    return
+  }
+
+  // Check that the Content-Type header is sensible, otherwise error out
+  if(!response.contentType.includes("json")) {
+    context.app.alert("Error!", `The response has invalid Content-Type "${response.contentType}", needs "application/json"! Alternatively, delete all Outputs and try again.`)
+    return // There's no point in attempting to parse the response, just jump to the next request
+  }
+
+  console.debug("parsing response data")
+  // Read the response data, then apply JSONPath expressions on it and update the CSV data
+  const responseData = JSON.parse(readResponseFromFile(response.bodyPath))
+  console.debug(responseData)
+  for(const {name, jsonPath} of outputConfig) {
+    let out = applyJsonPath(jsonPath, responseData) ?? null
+    console.debug(name, "+", jsonPath, "=>", out)
+
+    setCsvData(csvData => {
+      let newData = [...csvData] // Make a copy of the old data so we can mutate it normally
+      // NOTE: If we mutate csvData instead, all state updates are delayed by one tick 
+      // and the UI updates one person too late (the last one isn't updated)
+
+      out = JSON.stringify(out);
+      // If value was a string, remove the quotes, since they look weird, and we expect strings to be one
+      // of the primary output values of the plugin
+      if(out.startsWith('"') && out.endsWith('"')) {
+        out = out.substring(1, out.length - 1)
+      }
+      newData[i][name] = out; // Mutate the required field, save it as a string
+      return newData
+    })
+  }
+}
+

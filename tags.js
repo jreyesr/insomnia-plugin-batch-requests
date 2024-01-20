@@ -19,11 +19,10 @@ export const templateTags = [{
     async run(context, name, sample) {
         // context.renderPurpose is set to 'send' when actually sending the request
         if(context.renderPurpose === 'send') {
-            const storeKey = `${context.meta.requestId}.batchExtraData`;
-            if(await context.store.hasItem(storeKey)) {
-                const extraData = JSON.parse(await context.store.getItem(storeKey));
+            const extraData = context.context.getExtraInfo("batchExtraData")
+            if(extraData) {
                 console.debug('[store.get]', extraData);
-                return extraData[name];
+                return JSON.parse(extraData)[name];
             } else {
                 console.error(`Cannot find column ${name} on request extra data! Falling back to sample value.`);
                 return sample;
