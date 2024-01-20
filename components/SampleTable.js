@@ -5,7 +5,7 @@ export default function SampleTable({columnNames, data, numSamples=5}) {
   
   return (
     <React.Fragment>
-      <table className="table--fancy table--striped table--compact">
+      <table className="table--fancy table--striped table--compact" data-testid="sampletable">
         <thead>
           <tr>
             {columnNames.map(n => <th key={n}>{n}</th>)}
