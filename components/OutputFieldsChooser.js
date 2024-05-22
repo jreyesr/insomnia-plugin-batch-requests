@@ -8,15 +8,15 @@ export default function OutputFieldsChooser({colNames, onChange}) {
   const [outputs, setOutputs] = useState([]);
 
   const addNew = useCallback(() => {
-    const newVal = outputs.concat([{name: "", jsonPath: ""}]);
+    const newVal = outputs.concat([{name: "", context: "body", jsonPath: ""}]);
     setOutputs(newVal);
     onChange(newVal);
   }, [outputs, setOutputs, onChange]);
 
-  const updateField = useCallback((i) => (newName, newJsonPath) => {
+  const updateField = useCallback((i) => (newName, newContext, newJsonPath) => {
     // Poor man's deep copy, since I'm not sure if you should modify React state in place
     const cloned = JSON.parse(JSON.stringify(outputs))
-    cloned[i] = {name: newName, jsonPath: newJsonPath};
+    cloned[i] = {name: newName, context: newContext, jsonPath: newJsonPath};
     setOutputs(cloned);
     onChange(cloned);
   }, [outputs, setOutputs, onChange]);
@@ -30,7 +30,11 @@ export default function OutputFieldsChooser({colNames, onChange}) {
 
   return <FormRow label="Outputs">
     {outputs.map((o, i) => 
-      <OutputField key={i} options={colNames} name={o.name} jsonPath={o.jsonPath} onChange={updateField(i)} onDelete={deleteField(i)}/>
+      <OutputField key={i} 
+        options={colNames} 
+        name={o.name} context={o.context} jsonPath={o.jsonPath} 
+        onChange={updateField(i)} onDelete={deleteField(i)}
+      />
     )}
     <ActionButton title="Add" icon="fa-plus" onClick={addNew}/>
   </FormRow>

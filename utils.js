@@ -74,19 +74,42 @@ export async function makeRequest(context, request, i, row, delay, outputConfig,
     return
   }
 
-  // Check that the Content-Type header is sensible, otherwise error out
-  if(!response.contentType.includes("json")) {
-    context.app.alert("Error!", `The response has invalid Content-Type "${response.contentType}", needs "application/json"! Alternatively, delete all Outputs and try again.`)
-    return // There's no point in attempting to parse the response, just jump to the next request
-  }
+  let responseData = {};
+  // If any outputConfigs refer to the response body, we must parse it
+  if(outputConfig.some(x => x.context === "body")) {
+    // Check that the Content-Type header is sensible, otherwise error out
+    if(!response.contentType.includes("json")) {
+      context.app.alert("Error!", `The response has invalid Content-Type "${response.contentType}", needs "application/json"! Alternatively, delete all Outputs and try again.`)
+      return // There's no point in attempting to parse the response, just jump to the next request
+    }
 
-  console.debug("parsing response data")
-  // Read the response data, then apply JSONPath expressions on it and update the CSV data
-  const responseData = JSON.parse(readResponseFromFile(response.bodyPath))
+    console.debug("parsing response data")
+    responseData = JSON.parse(readResponseFromFile(response.bodyPath))
+  }
   console.debug(responseData)
-  for(const {name, jsonPath} of outputConfig) {
-    let out = applyJsonPath(jsonPath, responseData) ?? null
-    console.debug(name, "+", jsonPath, "=>", out)
+
+  // WEIRD: Labeled statement! https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/label
+  writerForLoop:
+  for(const {name, jsonPath, context: ctx} of outputConfig) {
+    let out;
+    switch(ctx) {
+      case "body":
+        out = applyJsonPath(jsonPath, responseData) ?? null
+        break
+      case "headers":
+        out = response.headers.find(h => h.name === jsonPath.toLowerCase()).value
+        break
+      case "statusCode":
+        out = response.statusCode.toString()
+        break
+      case "reqTime":
+        out = response.elapsedTime.toString()
+        break
+      default:
+        console.error("Unknown outputConfig:", "name", name, "jsonPath", jsonPath, "context", ctx)
+        continue writerForLoop // Skip to next outputConfig
+    } 
+    console.debug(name, "+", jsonPath, "@", ctx, "=>", out)
 
     setCsvData(csvData => {
       let newData = [...csvData] // Make a copy of the old data so we can mutate it normally
