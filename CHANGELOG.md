@@ -1,10 +1,18 @@
+# v1.4.0
+
+**Date:** 2024/05/22
+
+### New features
+
+- Add a way to read outputs (that will be written back to the CSV) from the response's headers, status code and request time, in addition to the response body as JSON ([#13](https://github.com/jreyesr/insomnia-plugin-batch-requests/pull/13))
+
 # v1.3.0
 
 **Date:** 2024/01/20
 
 ### New features
 
-- Add a configuration option to set default delay for all requests ([#11](https://github.com/jreyesr/insomnia-plugin-batch-requests/pull/11))
+- Add the ability to send requests in parallel, with configurable parallelism ([#11](https://github.com/jreyesr/insomnia-plugin-batch-requests/pull/11))
 
 # v1.2.0
 

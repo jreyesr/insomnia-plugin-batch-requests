@@ -76,6 +76,8 @@ export default function BatchDialog({context, request}) {
     setOutputConfig(x)
   }
 
+  console.debug("canRun", outputConfig.map(x => `${x.name} - ${x.jsonPath} - ${x.context} - ${Boolean(x.name && (x.jsonPath || ["statusCode", "reqTime"].includes(x.context))) ? "T" : "F"}`))
+
   const onChangeDelay = ({target: {value}}) => {
     if(value < 0) return;
     setDelay(value)
