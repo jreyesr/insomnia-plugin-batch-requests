@@ -45,7 +45,10 @@ export default function BatchDialog({context, request}) {
     writeFile(csvPath, outString);
   }, [csvData, csvHeaders, csvPath]);
 
-  const canRun = csvData.length > 0 && outputConfig.every(x => x.name && x.jsonPath);
+  // Valid output configs:
+  // * Must contain a name, AND
+  // * Must contain a jsonPath, OR must be statusCode or reqTime (which don't need a jsonPath)
+  const canRun = csvData.length > 0 && outputConfig.every(x => x.name && (x.jsonPath || ["statusCode", "reqTime"].includes(x.context)));
   const onRun = async () => {
     setSent(0);
 
@@ -72,6 +75,8 @@ export default function BatchDialog({context, request}) {
   const onChangeOutputFields = (x) => {
     setOutputConfig(x)
   }
+
+  console.debug("canRun", outputConfig.map(x => `${x.name} - ${x.jsonPath} - ${x.context} - ${Boolean(x.name && (x.jsonPath || ["statusCode", "reqTime"].includes(x.context))) ? "T" : "F"}`))
 
   const onChangeDelay = ({target: {value}}) => {
     if(value < 0) return;

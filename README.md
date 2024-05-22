@@ -5,11 +5,11 @@
 The Batch Requests plugin for [Insomnia](https://insomnia.rest) adds the ability to send a request repeatedly, changing parts of every request by variable data, taken from a CSV file. For every response, some data can be collected and added to the CSV file.
 
 - Repeatedly send a request by reading data from a CSV file
-- Extract data from JSON responses and write it back to the CSV file
+- Extract data from JSON responses (or other sources, such as the response headers, status code and time taken) and write it back to the CSV file
 - Works well if not using the plugin (when sending the request manually)
 - Add a delay between each request
 - Run multiple requests in parallel
-- Supports non-JSON responses too (but can't extract response data in such cases)
+- Supports non-JSON responses too (but can't extract response data in such cases. Can still use response headers and status code)
 
 ![A diagram displaying the flow of data in the plugin](images/flow.png)
 
@@ -46,9 +46,27 @@ On the plugin dialog, you should:
 
 1. Select a CSV file using the button. The file should have one column for each different placeholder/template tag that you have selected, plus one column for each result that you want to extract from the responses. The response/output columns can be empty, since they will be filled by the plugin.
 2. Review the loaded data in the table. It will show the first five rows of the CSV file. It is provided as a sanity check, so that you can verify that the CSV is being parsed correctly.
-3. (Optional) Configure the data that you want to output by adding `Outputs`. For each one, use the dropdown on the left to specify a CSV column, and write a JSONPath expression in the text field on the right. In the image below, the `$.total` field will be written to the `sales` column in the CSV file. This plugin uses [the `jsonpath-plus` syntax](https://www.npmjs.com/package/jsonpath-plus), which is [also used by Insomnia](https://docs.insomnia.rest/insomnia/responses#filter)
-4. Click the `Run!` button at the bottom of the dialog. It will only become active when you have chosen a file and (if any outputs exist) completely filled all Outputs.
-5. Click the `Save` button to write the extracted data back to the CSV file, if you need it. Wait until all requests have been performed (as indicated by the progress bar) before clicking this button.
+3. (Optional) Configure the data that you want to output by adding `Outputs`:
+   - Use the dropdowns on the left to specify a CSV column
+   - Use the dropdowns on the middle to specify from where the data will be collected. See [below](#sources-of-output-data) for the available sources
+   - If data is being read from the response body, write a JSONPath expression in the text fields on the right. In the image below, the `$.total` field will be written to the `sales` column in the CSV file. This plugin uses [the `jsonpath-plus` syntax](https://www.npmjs.com/package/jsonpath-plus), which is [also used by Insomnia](https://docs.insomnia.rest/insomnia/responses#filter)
+   - If data is being read from the response headers, write a header name in the text fields on the right. For example, write `content-length` to fetch the response's length. This field is case-insensitive (i.e. you don't need to match the exact casing returned by the server)
+4. If desired, specify a delay between requests, or a number of parallel requests. By default, no delay is applied, and requests are sent in sequence (one after the other, with no parallelization). See [below](#extra-settings) for more information.
+5. Click the `Run!` button at the bottom of the dialog. It will only become active when you have chosen a file and (if any outputs exist) completely filled all Outputs.
+6. Click the `Save` button to write the extracted data back to the CSV file, if you need it. Wait until all requests have been performed (as indicated by the progress bar) before clicking this button.
+
+### Sources of output data
+
+![a closeup of the UI, showing the Outputs section, with one output of each type (response body, response header, response status code, and request elapsed time)](images/output_datasources.png)
+
+Since `v1.4.0`, it's possible to extract data from several places in the response:
+
+- The response body (must be JSON). This is the default option and the only one available before `v1.4.0`. This option requires specifying [a JSONPath expression](https://www.npmjs.com/package/jsonpath-plus#syntax-through-examples) to extract a specific value from the JSON response, such as `$.data.id`
+- The response headers. This option requires specifying a header name,
+- The response status code (the numerical one, such as `200`). This option does _not_ require any further configuration
+- The time taken by the request (in milliseconds). This option does _not_ require any further configuration
+
+The source of data is chosen in the center dropdown of each Output. If required, the right-hand text field will appear and must contain something, otherwise it'll be hidden.
 
 ### Extra settings
 
