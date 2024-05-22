@@ -97,7 +97,7 @@ export async function makeRequest(context, request, i, row, delay, outputConfig,
         out = applyJsonPath(jsonPath, responseData) ?? null
         break
       case "headers":
-        out = response.headers.find(h => h.name === jsonPath.toLowerCase()).value
+        out = response.headers.find(h => h.name.toLowerCase() === jsonPath.toLowerCase()).value
         break
       case "statusCode":
         out = response.statusCode.toString()
