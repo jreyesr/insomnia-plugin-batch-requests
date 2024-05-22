@@ -32,7 +32,7 @@ export default function OutputField({options, name, context, jsonPath, onChange,
 
     ⟸
 
-    <select value={context} onChange={onChangeContext}>
+    <select value={context} onChange={onChangeContext} data-testid="context">
       <option value="body">From body</option>
       <option value="headers">From header</option>
       <option value="statusCode">Status code</option>

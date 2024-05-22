@@ -84,7 +84,9 @@ export async function makeRequest(context, request, i, row, delay, outputConfig,
     }
 
     console.debug("parsing response data")
-    responseData = JSON.parse(readResponseFromFile(response.bodyPath))
+    // NOTE: The exports.XYZ is required so mocks can hook this
+    // See https://medium.com/welldone-software/jest-how-to-mock-a-function-call-inside-a-module-21c05c57a39f
+    responseData = JSON.parse(exports.readResponseFromFile(response.bodyPath))
   }
   console.debug(responseData)
 
@@ -106,7 +108,7 @@ export async function makeRequest(context, request, i, row, delay, outputConfig,
         out = response.elapsedTime.toString()
         break
       default:
-        console.error("Unknown outputConfig:", "name", name, "jsonPath", jsonPath, "context", ctx)
+        console.error("Unknown outputConfig context:", "name", name, "jsonPath", jsonPath, "context", ctx)
         continue writerForLoop // Skip to next outputConfig
     } 
     console.debug(name, "+", jsonPath, "@", ctx, "=>", out)
