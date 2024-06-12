@@ -5,6 +5,7 @@
 The Batch Requests plugin for [Insomnia](https://insomnia.rest) adds the ability to send a request repeatedly, changing parts of every request by variable data, taken from a CSV file. For every response, some data can be collected and added to the CSV file.
 
 - Repeatedly send a request by reading data from a CSV file
+- Send files too by including their file path in the CSV file
 - Extract data from JSON responses (or other sources, such as the response headers, status code and time taken) and write it back to the CSV file
 - Works well if not using the plugin (when sending the request manually)
 - Add a delay between each request
@@ -22,6 +23,9 @@ For a short demonstration, watch this:
 Go to the `Application>Preferences` menu in Insomnia, then go to the `Plugins` tab, search for `insomnia-plugin-batch-requests` and install it.
 
 ## Usage
+
+> **Note**
+> Want to send files in your repeated requests? See [below](#sending-files). The `Batch` tag that is described in this section sends text values only
 
 The plugin adds a template tag to mark the places that you want to replace. To add it, press `Ctrl+Space`, search for the `Batch` tag and press `Enter`. Then, double click the tag to configure it. The tag can be inserted anywhere in the request (e.g. in the URL, query parameters, headers, or body)
 
@@ -54,6 +58,44 @@ On the plugin dialog, you should:
 4. If desired, specify a delay between requests, or a number of parallel requests. By default, no delay is applied, and requests are sent in sequence (one after the other, with no parallelization). See [below](#extra-settings) for more information.
 5. Click the `Run!` button at the bottom of the dialog. It will only become active when you have chosen a file and (if any outputs exist) completely filled all Outputs.
 6. Click the `Save` button to write the extracted data back to the CSV file, if you need it. Wait until all requests have been performed (as indicated by the progress bar) before clicking this button.
+
+### Sending files
+
+Since `v1.5.0`, it's possible to also send _files_ that vary on each request, just like before it was possible to send _text_ that varied.
+
+For example, this could be useful to upload several files at once to Google Drive: just prepare a CSV that lists the paths to the files and any other data that must vary per file (e.g. the file's title), and then run the request several times.
+
+The CSV must look like this (it must contain a column, here called `fname`, that lists absolute file paths):
+
+![a CSV file that has a column that contains absolute file paths](images/csv_with_files.png)
+
+Then, create a request on Insomnia. Set its Body to Multipart. Add a new field to the body. Insert a `Batch (File)` template tag: place the cursor in the Value of the field, press `Ctrl+Space`, search for `Batch (File)`, and insert it:
+
+![a screenshot of the Batch (File) template tag being offered](images/file_templatetag.png)
+
+> **Warning**
+> Do _not_ change the field's type to File! Leave it as Text, which is the default. If you change it to File, it isn't possible to insert template tags, since Insomnia only shows the file picker button, so you'd be forced to choose one single file for all requests
+
+Click on the newly-added tag to open its configuration dialog:
+
+![a screenshot of the Batch (File) tag's config dialog](images/file_templatetag_config.png)
+
+When configuring the tag, set the following two values:
+
+- The name of the CSV column that will be replaced in this tag's location. Copy it from the first line of the CSV file, exactly (including capitalization)
+- A sample value. This value will be used when sending the request manually. This is the value that you would have to edit manually if this plugin did not exist.
+
+Click the Done button to save changes. The tag should now look like this:
+
+![a screenshot of the Batch (File) template tag being used in a request](images/file_templatetag_used.png)
+
+From now on, the process continues as normal (see [the Usage section above](#usage)). Click the dropdown menu for the request, select the Batch Requests option, select a CSV file, configure any desired outputs, and click Run. Any fields whose content is a Batch (File) template tag will be replaced with the _contents_ of the file whose path is contained in the configured column of the CSV file. Requests will then be sent as normal. For example, this is the third request sent with the CSV file that was shown above:
+
+![a screenshot of the Insomnia timeline showing a request that includes a binary file, which was sent using the Batch Requests functionality](images/timeline_with_file.png)
+
+If you send the request manually (e.g. by clicking the Run button, or by pressing `Ctrl+Enter` or `F5`), the file that will be sent will be the one that was configured on the template tag's **Sample Data** field:
+
+![a screenshot of the Insomnia timeline showing a request that includes a binary file, which was sent manually](images/timeline_file_manual.png)
 
 ### Sources of output data
 
