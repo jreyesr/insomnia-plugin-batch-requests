@@ -46,7 +46,7 @@ export const templateTags = [{
 {
     name: 'batchFile',
     displayName: 'Batch (File)',
-    liveDisplayName: ([colName, sample]) => (colName.value ? `CSV[${colName.value}] as File: ${sample.value}` : 'Batch'),
+    liveDisplayName: ([colName, sample]) => (colName.value ? `CSV[${colName.value}] as File: ${sample.value}` : 'Batch (File)'),
     description: 'Placeholder for the Batch Requests plugin',
     args: [
         {
