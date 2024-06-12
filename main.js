@@ -24,6 +24,7 @@ module.exports.requestHooks = [
         if(param.value.startsWith(MAGIC_FILE_FIELD_PREFIX)) {
           param.type = "file"
           param.fileName = param.value.replace(MAGIC_FILE_FIELD_PREFIX, "");
+          console.debug(`[batchFile.hook] Switching field ${param.name} to File field, originalFilename=${param.value}, filename=${param.fileName}`)
         }
       }
     }
