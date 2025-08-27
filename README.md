@@ -22,9 +22,14 @@ For a short demonstration, watch this:
 
 Go to the `Application>Preferences` menu in Insomnia, then go to the `Plugins` tab, search for `insomnia-plugin-batch-requests` and install it.
 
+> [!NOTE]
+> Starting on Insomnia v11, it's also necessary to enable the **Allow elevated access for plugins** checkbox in the Plugins tab of the Insomnia preferences. Otherwise, you'll see an error like `unknown block tag: batchVariable`. See issues https://github.com/jreyesr/insomnia-plugin-batch-requests/issues/18 and https://github.com/Kong/insomnia/issues/8708.
+> 
+> <img width="840" height="582" alt="image" src="https://github.com/user-attachments/assets/fa402908-16c5-4ead-8145-8555ad13341b" />
+
 ## Usage
 
-> **Note**
+> [!NOTE]
 > Want to send files in your repeated requests? See [below](#sending-files). The `Batch` tag that is described in this section sends text values only
 
 The plugin adds a template tag to mark the places that you want to replace. To add it, press `Ctrl+Space`, search for the `Batch` tag and press `Enter`. Then, double click the tag to configure it. The tag can be inserted anywhere in the request (e.g. in the URL, query parameters, headers, or body)
