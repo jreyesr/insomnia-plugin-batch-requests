@@ -152,7 +152,7 @@ Since `v1.2.0`, there is a Global Configuration dialog in which you can select a
 9. To run tests, run `npm run test`
 10. Make commit.
 11. GOTO 6
-12. Update the package version in `package.json`.
+12. Update the package version in `package.json` and add a new entry on `CHANGELOG.md`
 13. When done, submit a PR and merge it. If releasing a new version, see [the next section](#releasing).
 
 ## Releasing

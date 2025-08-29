@@ -1,10 +1,29 @@
+# v1.5.1
+
+**Date:** 2025/08/28
+
+### Bugfixes
+
+- Get the plugin to work with Insomnia v11
+  (see [#19](https://github.com/jreyesr/insomnia-plugin-batch-requests/issues/19))
+
+# v1.5.0
+
+**Date:** 2024/06/12
+
+### New features
+
+- Add a new template tag that can send different files on each request
+
 # v1.4.0
 
 **Date:** 2024/05/22
 
 ### New features
 
-- Add a way to read outputs (that will be written back to the CSV) from the response's headers, status code and request time, in addition to the response body as JSON ([#13](https://github.com/jreyesr/insomnia-plugin-batch-requests/pull/13))
+- Add a way to read outputs (that will be written back to the CSV) from the response's headers, status code and request
+  time, in addition to the response body as
+  JSON ([#13](https://github.com/jreyesr/insomnia-plugin-batch-requests/pull/13))
 
 # v1.3.0
 
@@ -12,7 +31,8 @@
 
 ### New features
 
-- Add the ability to send requests in parallel, with configurable parallelism ([#11](https://github.com/jreyesr/insomnia-plugin-batch-requests/pull/11))
+- Add the ability to send requests in parallel, with configurable
+  parallelism ([#11](https://github.com/jreyesr/insomnia-plugin-batch-requests/pull/11))
 
 # v1.2.0
 
@@ -20,7 +40,8 @@
 
 ### New features
 
-- Add a configuration option to set default delay for all requests ([#7](https://github.com/jreyesr/insomnia-plugin-batch-requests/pull/7))
+- Add a configuration option to set default delay for all
+  requests ([#7](https://github.com/jreyesr/insomnia-plugin-batch-requests/pull/7))
 
 # v1.1.1
 
@@ -28,7 +49,8 @@
 
 ### Bugfixes
 
-- Fix plugin freezing after sending the first request when response isn't valid JSON ([#4](https://github.com/jreyesr/insomnia-plugin-batch-requests/issues/4))
+- Fix plugin freezing after sending the first request when response isn't valid
+  JSON ([#4](https://github.com/jreyesr/insomnia-plugin-batch-requests/issues/4))
 
 # v1.1.0
 
@@ -36,7 +58,8 @@
 
 ### New features
 
-- Added a configuration option to set a delay between consecutive requests ([#1](https://github.com/jreyesr/insomnia-plugin-batch-requests/issues/1))
+- Added a configuration option to set a delay between consecutive
+  requests ([#1](https://github.com/jreyesr/insomnia-plugin-batch-requests/issues/1))
 
 # v1.0.1
 
