@@ -115,6 +115,22 @@ Since `v1.4.0`, it's possible to extract data from several places in the respons
 
 The source of data is chosen in the center dropdown of each Output. If required, the right-hand text field will appear and must contain something, otherwise it'll be hidden.
 
+### Output presets
+
+Since `v1.6.0`, it's possible to store and load different settings for the Outputs section (see [#24](https://github.com/jreyesr/insomnia-plugin-batch-requests/discussions/24)).
+For example, if you usually load CSV files that have the same columns, call the same Request and extract the same fields
+to the same CSV columns, that can be stored into a Preset for subsequent reuse. This is controlled by the following buttons:
+
+![img.png](images/presets.png)
+
+* To store a Preset for later, first configure the desired Outputs (CSV column + source + JSONPath query or header name). 
+  Then, click the Save preset button and give the preset a name. This will record the currently configured Outputs
+* To load a Preset, choose a CSV file (otherwise the preset picker won't be enabled), and then select the desired preset
+  from the list. If you haven't saved a preset, the picker won't activate. Once you choose a preset, the configuration
+  in the Outputs will be overwritten with what was stored in the preset.
+* To delete a Preset, first load it with the picker, and then click the Delete button to the right of the preset picker.
+  If you haven't chosen a preset, the button will be disabled.
+
 ### Extra settings
 
 There are two additional options that can be set when sending batch requests. They appear in the **Run Config** section, above the progress bar:

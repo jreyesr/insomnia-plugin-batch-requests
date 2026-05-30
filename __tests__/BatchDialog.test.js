@@ -6,6 +6,7 @@ import BatchDialog from '../components/BatchDialog'
 
 
 const mockAlert = jest.fn();
+const mockAllItems = jest.fn();
 const mockGetItem = jest.fn();
 const mockSetItem = jest.fn();
 const mockRemoveItem = jest.fn();
@@ -19,6 +20,7 @@ utils.selectFile = jest.fn();
 
 beforeEach(() => {
   mockGetItem.mockReturnValue(JSON.stringify({defaultDelay: 0.1}));
+  mockAllItems.mockReturnValue([])
   utils.readCsv.mockImplementation(originalReadCsv);
   utils.selectFile.mockImplementation(originalSelectFile);
 })
@@ -30,6 +32,7 @@ afterEach(() => {
 const mockContext = {
   store: {
     hasItem: jest.fn(k => true),
+    all: mockAllItems,
     getItem: mockGetItem,
     setItem: mockSetItem,
     removeItem: mockRemoveItem,
@@ -67,7 +70,7 @@ it('does not enable the buttons on load', async () => {
   await waitFor(() => expect(delayField).toHaveValue(0.1));
 
   expect(getByText(/run!/i)).toBeDisabled();
-  expect(getByText(/save/i)).toBeDisabled();
+  expect(getByText(/^save$/i)).toBeDisabled();
 });
 
 it('prompts the user to choose a file', async () => {

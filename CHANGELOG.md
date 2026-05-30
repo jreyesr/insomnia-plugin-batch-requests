@@ -1,3 +1,11 @@
+# v1.6.0
+
+**Date:** 2026/05/26
+
+### New features
+
+- Add stored presets for commonly-used Output settings ([#24](https://github.com/jreyesr/insomnia-plugin-batch-requests/discussions/24)) ([docs](./README.md#output-presets))
+
 # v1.5.1
 
 **Date:** 2025/08/28
@@ -13,7 +21,7 @@
 
 ### New features
 
-- Add a new template tag that can send different files on each request
+- Add a new template tag that can send different files on each request ([docs](./README.md#sending-files))
 
 # v1.4.0
 
@@ -23,7 +31,7 @@
 
 - Add a way to read outputs (that will be written back to the CSV) from the response's headers, status code and request
   time, in addition to the response body as
-  JSON ([#13](https://github.com/jreyesr/insomnia-plugin-batch-requests/pull/13))
+  JSON ([#13](https://github.com/jreyesr/insomnia-plugin-batch-requests/pull/13)) ([docs](./README.md#sources-of-output-data))
 
 # v1.3.0
 

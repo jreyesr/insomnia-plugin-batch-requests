@@ -1,7 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { stringify } from 'csv-stringify/sync';
+import React, {useCallback, useEffect, useState} from 'react';
+import {stringify} from 'csv-stringify/sync';
 
-import { writeFile, readCsv, readSettings, makeRequest } from '../utils';
+import {
+  writeFile,
+  readCsv,
+  readSettings,
+  makeRequest,
+  getAllPresets,
+  savePreset,
+  getPreset,
+  deletePreset
+} from '../utils';
 import Queue from "queue-promise"
 
 import SampleTable from './SampleTable';
@@ -23,13 +32,26 @@ export default function BatchDialog({context, request}) {
   const [delay, setDelay] = useState(0);
   const [parallelism, setParallelism] = useState(1);
 
+  const [presets, setPresets] = useState([])
+  const [loadedPreset, setLoadedPreset] = useState(null)
+
   // Load default delay from plugin settings on mount
   useEffect(() => {
     async function loadSettings() {
       const settings = await readSettings(context.store);
       setDelay(parseFloat(settings.defaultDelay ?? 0))
     }
+
     loadSettings();
+  }, [])
+
+  async function updatePresets() {
+    setPresets(await getAllPresets(context.store))
+  }
+
+  // fill up the presets on component load
+  useEffect(() => {
+    updatePresets()
   }, [])
 
   const onFileChosen = async (path) => {
@@ -57,10 +79,10 @@ export default function BatchDialog({context, request}) {
       interval: 0,
       start: false,
     });
-    
+
     // Hook a promise to the queue's "end" event
     const isDone = new Promise(resolve => queue.on("end", resolve))
-    for(const [i, row] of csvData.entries()) {
+    for (const [i, row] of csvData.entries()) {
       queue.enqueue(() => makeRequest(context, request, i, row, delay, outputConfig, setSent, setCsvData))
     }
 
@@ -76,10 +98,28 @@ export default function BatchDialog({context, request}) {
     setOutputConfig(x)
   }
 
-  console.debug("canRun", outputConfig.map(x => `${x.name} - ${x.jsonPath} - ${x.context} - ${Boolean(x.name && (x.jsonPath || ["statusCode", "reqTime"].includes(x.context))) ? "T" : "F"}`))
+  const onSavePresetButtonClicked = async () => {
+    const presetName = await context.app.prompt("Preset name", {
+      label: "Provide a name for the new saved preset",
+      defaultValue: `New preset ${new Date().toDateString()}`,
+    })
+    await savePreset(context.store, presetName, outputConfig)
+    updatePresets()
+  }
+
+  const onPresetSelectedForLoad = async ({target: {value}}) => {
+    const preset = await getPreset(context.store, value)
+    setOutputConfig(preset.outputs)
+    setLoadedPreset(preset.outputs) // this notifies the child OutputFieldsChooser via an effect
+  }
+
+  const onDeletePresetButtonClicked = async (presetName) => {
+    await deletePreset(context.store, presetName)
+    updatePresets()
+  }
 
   const onChangeDelay = ({target: {value}}) => {
-    if(value < 0) return;
+    if (value < 0) return;
     setDelay(value)
   }
 
@@ -89,21 +129,26 @@ export default function BatchDialog({context, request}) {
     </FormRow>
     {csvData.length ? (
       <FormRow label="Sample data" insideLabel={false}>
-        <SampleTable columnNames={csvHeaders} data={csvData} />
+        <SampleTable columnNames={csvHeaders} data={csvData}/>
       </FormRow>
     ) : <p>Choose a file above to preview it!</p>}
 
-    <OutputFieldsChooser colNames={csvHeaders} onChange={onChangeOutputFields} />
+    <OutputFieldsChooser colNames={csvHeaders} presets={presets} onChange={onChangeOutputFields}
+                         onSavePreset={onSavePresetButtonClicked} onLoadPreset={onPresetSelectedForLoad}
+                         loadedPreset={loadedPreset}
+                         onDeletePreset={onDeletePresetButtonClicked}/>
 
     <FormRow label="Run config">
-      <DelaySelector value={delay} onChange={onChangeDelay}/>
-      <ParallelSelector value={parallelism} onChange={({target: {value}}) => setParallelism(value)}/>
+      <div style={{display: "flex", flexDirection: "row", gap: "1em"}}>
+        <DelaySelector value={delay} onChange={onChangeDelay}/>
+        <ParallelSelector value={parallelism} onChange={({target: {value}}) => setParallelism(value)}/>
+      </div>
     </FormRow>
 
     <FormRow label="Progress">
-      <ProgressBar bgcolor="#ff6b6b" completed={sent * 100 / totalRequests} text={`${sent}/${totalRequests}`} />
+      <ProgressBar bgcolor="#ff6b6b" completed={sent * 100 / totalRequests} text={`${sent}/${totalRequests}`}/>
     </FormRow>
-    
+
     <ActionButton title="Run!" icon="fa-person-running" onClick={onRun} disabled={!canRun}/>
     <ActionButton title="Save" icon="fa-save" onClick={saveCsv} disabled={!canRun} style={{marginLeft: 5}}/>
   </React.Fragment>);

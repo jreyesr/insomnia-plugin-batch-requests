@@ -1,5 +1,5 @@
 export default function ParallelSelector({value, onChange}) {
-  return <label>
+  return <label style={{flexGrow: 1}}>
     Parallel requests
     <input
       type="number"

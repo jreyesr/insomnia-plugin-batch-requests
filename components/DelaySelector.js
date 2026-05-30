@@ -1,5 +1,5 @@
 export default function DelaySelector({value, onChange}) {
-  return <label>
+  return <label style={{flexGrow: 1}}>
     Delay in seconds
     <input
       type="number"

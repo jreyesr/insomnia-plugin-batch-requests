@@ -5,7 +5,7 @@ import OutputFieldsChooser from '../components/OutputFieldsChooser'
 
 it('displays default UI', () => {
   const {container} = render(
-    <OutputFieldsChooser colNames={["a", "b"]} />,
+    <OutputFieldsChooser colNames={["a", "b"]} presets={[]}/>,
   );
 
   expect(container).toHaveTextContent("Add");
@@ -14,7 +14,7 @@ it('displays default UI', () => {
 it('can add a field', async () => {
   const user = userEvent.setup();
   const {getByText, getAllByTestId} = render(
-    <OutputFieldsChooser colNames={["a", "b"]} onChange={jest.fn()} />,
+    <OutputFieldsChooser colNames={["a", "b"]} onChange={jest.fn()} presets={[]}/>,
   );
 
   await user.click(getByText("Add"));
@@ -26,7 +26,7 @@ it('notifies parent when field is added', async () => {
   const onChange = jest.fn();
   const user = userEvent.setup();
   const {getByText} = render(
-    <OutputFieldsChooser colNames={["a", "b"]} onChange={onChange} />,
+    <OutputFieldsChooser colNames={["a", "b"]} onChange={onChange} presets={[]}/>,
   );
 
   await user.click(getByText("Add"));
@@ -38,7 +38,7 @@ it('notifies parent when field is deleted', async () => {
   const onChange = jest.fn();
   const user = userEvent.setup();
   const {getByText, getByTestId, queryAllByTestId} = render(
-    <OutputFieldsChooser colNames={["a", "b"]} onChange={onChange} />,
+    <OutputFieldsChooser colNames={["a", "b"]} onChange={onChange} presets={[]}/>,
   );
   await user.click(getByText("Add"));
   onChange.mockClear();
@@ -54,7 +54,7 @@ it('notifies parent when field is updated', async () => {
   const onChange = jest.fn();
   const user = userEvent.setup();
   const {getByText, getByTestId} = render(
-    <OutputFieldsChooser colNames={["a", "b"]} onChange={onChange} />,
+    <OutputFieldsChooser colNames={["a", "b"]} onChange={onChange} presets={[]}/>,
   );
   await user.click(getByText("Add"));
   onChange.mockClear();
@@ -70,7 +70,7 @@ it("tracks the output's context", async () => {
   const onChange = jest.fn();
   const user = userEvent.setup();
   const {getByText, getByTestId} = render(
-    <OutputFieldsChooser colNames={["a", "b"]} onChange={onChange} />,
+    <OutputFieldsChooser colNames={["a", "b"]} onChange={onChange} presets={[]}/>,
   );
   await user.click(getByText("Add"));
   onChange.mockClear();

@@ -63,7 +63,7 @@ it('rejects negative numbers', async () => {
   
   await user.clear(delayField);
   await user.type(delayField, "-0.1")
-  expect(delayField).toHaveValue(0.1);
+  expect(delayField).toHaveValue(0.1); // The field rejects the - so it becomes 0.1
 });
 
 it("doesn't enable the Save button when loading", async () => {
